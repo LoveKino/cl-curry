@@ -1,7 +1,7 @@
 {
   "name": "cl-curry",
   "version": "0.0.1",
-  "description": "",
+  "description": "Curry Function Support Any Order Curry",
   "main": "index.js",
   "scripts": {
     "test": "mocha --compilers js:babel-core/register test/**/*.js"
@@ -21,6 +21,9 @@
     "url": "git+https://github.com/LoveKino/cl-curry.git"
   },
   "keywords": [
+    "curry",
+    "order",
+    "param"
   ],
   "author": "ddchen",
   "license": "MIT"
