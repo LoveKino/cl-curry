@@ -57,4 +57,13 @@ describe("base", () => {
         let b = curry(f, 2);
         assert.equal(b(2)(1), 1);
     });
+
+    it("finished", () => {
+        let f = (x, y) => x - y;
+        let b = curry(f, 2);
+        let step1 = b(2);
+        let step2 = b(1);
+        assert.equal(curry.isFinished(step1) === false, true);
+        assert.equal(curry.isFinished(step2) === true, true);
+    });
 });
