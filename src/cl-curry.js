@@ -13,6 +13,7 @@ let unique = {};
  * @param  {integer} paramCount
  * @param  {} context
  */
+
 let curry = (f, paramCount = 0, context) => {
     if (typeof f !== "function")
         throw new TypeError("Expect function for f.");
@@ -22,44 +23,44 @@ let curry = (f, paramCount = 0, context) => {
 
     if (paramCount < 0)
         throw new Error("Expect integer not less than 0.");
-    
-    let handler = high(f, paramCount, context)([], {});
 
-    handler.unique = unique;
+    let middle = (params, paramsMap) => {
+        let handler = (v, index) => {
+            if (paramCount === 0)
+                return f.apply(context);
 
-    return handler;
-}
+            if (index === undefined) index = params.length;
 
-let high = (f, paramCount, context) => (params, paramsMap) => (v, index) => {
-    if (paramCount === 0)
-        return f.apply(context);
+            if (!isInteger(index))
+                throw new TypeError("Expect integer for index.");
 
-    if (index === undefined) index = params.length;
+            if (index < 0)
+                throw new Error("index is less than 0.");
 
-    if (!isInteger(index))
-        throw new TypeError("Expect integer for index.");
+            if (index > paramCount - 1)
+                throw new Error("index is bigger than paramCount.");
 
-    if (index < 0 || index > paramCount - 1)
-        throw new Error("index is less than 0 or bigger than paramCount.");
+            let clonedParams = params.slice(0);
+            let clonedParamMap = cloneMap(paramsMap);
+            clonedParams[index] = v;
+            clonedParamMap[index] = v;
 
-    params[index] = v;
-    paramsMap[index] = v;
-    if (getKeyLength(paramsMap) === paramCount)
-        return f.apply(context, params);
+            if (getKeyLength(clonedParamMap) === paramCount)
+                return f.apply(context, clonedParams);
 
-    let handler = high(f, paramCount, context)(cloneList(params), cloneMap(paramsMap));
-    handler.unique = unique;
-
-    return handler;
-}
-
-let cloneList = (list) => {
-    let newList = [];
-    for (let i = 0; i < list.length; i++) {
-        newList.push(list[i]);
+            return middle(clonedParams, clonedParamMap);
+        }
+        handler.unique = unique;
+        return handler;
     }
-    return newList;
+    return middle([], {});
 }
+
+curry.isFinished = (handler) => !(
+    handler &&
+    typeof handler === "function" &&
+    handler.unique === unique
+);
 
 let cloneMap = (map) => {
     let newMap = {};
@@ -69,18 +70,7 @@ let cloneMap = (map) => {
     return newMap;
 }
 
-curry.isFinished = (handler) => {
-    if (handler &&
-        typeof handler === "function" &&
-        handler.unique === unique) {
-        return false;
-    }
-    return true;
-}
-
-let isInteger = (obj) => {
-    return typeof obj === 'number' && obj % 1 === 0
-}
+let isInteger = (obj) => typeof obj === 'number' && obj % 1 === 0;
 
 let getKeyLength = (map) => {
     if (Object.keys) return Object.keys(map).length;
