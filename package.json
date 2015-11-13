@@ -1,6 +1,6 @@
 {
   "name": "cl-curry",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Curry Function Support Any Order Curry",
   "main": "index.js",
   "scripts": {
