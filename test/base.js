@@ -77,4 +77,22 @@ describe("base", () => {
         assert.equal(half(3), -2);
         assert.equal(b(3)(1), 2);
     });
+
+     it("finish", () => {
+        let f = (x, y = 3) => x - y;
+        let b = curry(f, 2);
+        let half = b(1);
+
+        assert.equal(half.finish(), -2);
+    });
+
+    it("finish2", () => {
+        let f = (x, y = 3) => x - y;
+        let b = curry(f, 2);
+        let half = b(1);
+
+        assert.equal(curry.finish(half), -2);
+        assert.equal(curry.finish(3), 3);
+        assert.equal(curry.finish(() => 5), 5);
+    });
 });
